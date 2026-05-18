@@ -12,8 +12,8 @@ export function sampleChapter(titleId: string): Chapter {
     width: 800,
     height: 1200,
     jpTokens: i === 0 ? [
-      { text: '門', reading: 'mon', meaning: 'gate', pos: 'noun', jlpt: 'N4' as const, box: [0.55, 0.78, 0.05, 0.04] },
-      { text: '息', reading: 'iki', meaning: 'breath', pos: 'noun', jlpt: 'N3' as const, box: [0.62, 0.78, 0.05, 0.04] },
+      { text: '門', reading: 'mon', meaning: 'gate', pos: 'noun', jlpt: 'N4' as const, box: [0.55, 0.78, 0.05, 0.04] as [number, number, number, number] },
+      { text: '息', reading: 'iki', meaning: 'breath', pos: 'noun', jlpt: 'N3' as const, box: [0.62, 0.78, 0.05, 0.04] as [number, number, number, number] },
     ] : [],
   }));
   return {
