@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>KIRA · Strategy brief — wireframes, components & age-gate</title>
+  <link rel="stylesheet" href="styles/tokens.css"/>
+  <style>
+    html, body { margin: 0; background: var(--bg-0); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 56px 40px 120px; }
+
+    /* Top bar (matches tech-brief.html) */
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding: 16px 40px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(5,5,7,0.85); backdrop-filter: blur(12px); z-index: 20; }
+    .topbar a { color: var(--text-2); text-decoration: none; font-size: 13px; }
+    .topbar a:hover { color: var(--hot); }
+    .topbar .pipe { width: 1px; height: 14px; background: var(--line); }
+    .navlinks { display: flex; gap: 22px; }
+
+    /* Hero */
+    .eyebrow { font-family: var(--font-hit); font-size: 12px; letter-spacing: .22em; color: var(--hot); text-transform: uppercase; }
+    h1 { font-family: var(--font-display); font-size: 60px; line-height: 1; letter-spacing: -.025em; margin: 14px 0 0; }
+    .lede { font-size: 17px; line-height: 1.55; color: var(--text-2); margin-top: 20px; max-width: 760px; }
+    h2 { font-family: var(--font-display); font-size: 30px; letter-spacing: -.02em; margin: 72px 0 4px; display: flex; align-items: center; gap: 14px; }
+    h2 .n { font-family: var(--font-hit); font-size: 14px; color: var(--hot); letter-spacing: .15em; padding: 5px 10px; border: 1px solid rgba(255,31,109,0.45); border-radius: 4px; background: rgba(255,31,109,0.06); }
+    h3 { font-family: var(--font-display); font-size: 18px; margin: 32px 0 8px; }
+    h4 { font-size: 13px; font-weight: 700; letter-spacing: .02em; margin: 18px 0 6px; color: var(--text); }
+    p, li { font-size: 14.5px; line-height: 1.65; color: var(--text-2); }
+    ol, ul { padding-left: 22px; }
+
+    .tag { display:inline-flex; align-items:center; gap:4px; font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--line-strong); color: var(--text-2); background: rgba(255,255,255,0.03); margin-right: 6px; }
+    .tag.hot { color: var(--hot); border-color: rgba(255,31,109,0.5); background: rgba(255,31,109,0.08); }
+    .tag.ice { color: var(--ice); border-color: rgba(94,200,255,0.5); background: rgba(94,200,255,0.08); }
+    .tag.violet { color: var(--violet); border-color: rgba(184,85,255,0.5); background: rgba(184,85,255,0.08); }
+    .tag.gold { color: var(--gold); border-color: rgba(255,212,0,0.5); background: rgba(255,212,0,0.08); }
+    .tag.jade { color: var(--jade); border-color: rgba(31,243,157,0.5); background: rgba(31,243,157,0.08); }
+
+    /* Sitemap tree (CSS-only) */
+    .tree { background: var(--bg-1); border: 1px solid var(--line); border-radius: 14px; padding: 22px 26px; margin-top: 16px; font-family: var(--font-mono); font-size: 13px; line-height: 1.85; color: var(--text-2); }
+    .tree .branch { color: var(--muted); }
+    .tree .node { color: var(--text); }
+    .tree .route { color: var(--hot); }
+    .tree .desc { color: var(--muted); font-size: 11.5px; }
+    .tree .gate { color: var(--violet); }
+    .tree .api { color: var(--ice); }
+
+    /* Wireframe canvas — low-fi mockup boxes */
+    .wires { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 18px; }
+    .wire { background: var(--bg-1); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+    .wire h4 { margin: 0 0 4px; font-size: 13px; }
+    .wire .device { margin-top: 10px; background: var(--bg-2); border-radius: 8px; padding: 10px; aspect-ratio: 9 / 16; display: flex; flex-direction: column; gap: 6px; overflow: hidden; position: relative; }
+    .wire .bar  { background: rgba(255,255,255,0.06); border-radius: 3px; height: 12px; }
+    .wire .bar.lg { height: 18px; }
+    .wire .bar.acc { background: rgba(255,31,109,0.45); }
+    .wire .bar.gold { background: rgba(255,212,0,0.45); }
+    .wire .bar.violet { background: rgba(184,85,255,0.4); }
+    .wire .row { display: flex; gap: 4px; }
+    .wire .row > * { flex: 1; }
+    .wire .block { background: rgba(255,255,255,0.05); border-radius: 4px; aspect-ratio: 2/3; position: relative; }
+    .wire .block::after { content: attr(data-label); position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-mono); font-size: 8px; color: var(--muted); letter-spacing: .05em; text-align: center; padding: 4px; line-height: 1.3; }
+    .wire .block.wide { aspect-ratio: auto; height: 70px; }
+    .wire .block.tall { aspect-ratio: 3/4; }
+    .wire .block.acc { background: rgba(255,31,109,0.18); border: 1px dashed rgba(255,31,109,0.5); }
+    .wire .block.acc::after { color: var(--hot); }
+    .wire .annot { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+    .wire .annot b { color: var(--hot); font-weight: 700; }
+    .wire .annot.violet b { color: var(--violet); }
+
+    /* Component anatomy table */
+    .anatomy { display: grid; grid-template-columns: 220px 1fr; gap: 0; margin-top: 16px; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+    .anatomy > div { padding: 16px 20px; border-top: 1px solid var(--line); }
+    .anatomy > div:nth-child(-n+2) { border-top: 0; }
+    .anatomy .key { background: rgba(255,31,109,0.04); font-weight: 700; color: var(--text); display: flex; flex-direction: column; gap: 4px; }
+    .anatomy .key code { font-family: var(--font-mono); font-size: 10.5px; color: var(--hot); font-weight: 500; }
+    .anatomy .val { color: var(--text-2); font-size: 13.5px; line-height: 1.6; }
+    .anatomy .val .tag { margin-bottom: 4px; }
+
+    /* Age-gate flow diagram */
+    .gateflow { background: var(--bg-1); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-top: 16px; overflow-x: auto; }
+    .ascii { font-family: var(--font-mono); font-size: 12.5px; color: var(--text-2); line-height: 1.7; white-space: pre; }
+    .ascii .hot { color: var(--hot); }
+    .ascii .ice { color: var(--ice); }
+    .ascii .gold { color: var(--gold); }
+    .ascii .violet { color: var(--violet); }
+    .ascii .muted { color: var(--muted); }
+    .ascii .jade { color: var(--jade); }
+
+    /* Callout cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 14px; }
+    .card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+    .card.violet { border-color: rgba(184,85,255,0.3); background: linear-gradient(160deg, rgba(184,85,255,0.06), transparent 60%), var(--bg-1); }
+    .card.hot { border-color: rgba(255,31,109,0.3); background: linear-gradient(160deg, rgba(255,31,109,0.06), transparent 60%), var(--bg-1); }
+    .card.jade { border-color: rgba(31,243,157,0.3); background: linear-gradient(160deg, rgba(31,243,157,0.06), transparent 60%), var(--bg-1); }
+    .card h4 { margin: 0 0 6px; }
+    .card p { margin: 0; font-size: 12.5px; }
+
+    .checklist { padding-left: 0; list-style: none; margin: 14px 0 0; display: grid; gap: 8px; }
+    .checklist li { display: flex; align-items: flex-start; gap: 10px; padding: 10px 14px; background: var(--bg-1); border: 1px solid var(--line); border-radius: 8px; font-size: 13px; color: var(--text-2); }
+    .checklist li::before { content: '✓'; color: var(--jade); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .checklist li.warn::before { content: '!'; color: var(--gold); }
+    .checklist b { color: var(--text); font-weight: 600; }
+
+    /* Delivered links */
+    .delivered { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+    .delivered a { display: block; padding: 16px 18px; background: var(--bg-1); border: 1px solid var(--line); border-radius: 12px; text-decoration: none; color: var(--text-2); transition: border-color .15s; }
+    .delivered a:hover { border-color: var(--hot); color: var(--text); }
+    .delivered .small { font-family: var(--font-mono); font-size: 10.5px; color: var(--hot); letter-spacing: .1em; }
+    .delivered .name { display: block; margin: 6px 0 4px; font-size: 15px; font-weight: 700; color: var(--text); }
+    .delivered .meta { font-size: 11.5px; color: var(--muted); }
+
+    @media (max-width: 920px) {
+      .wires, .cards, .delivered { grid-template-columns: 1fr; }
+      .anatomy { grid-template-columns: 1fr; }
+      .anatomy .key { border-bottom: 1px solid var(--line); }
+      .anatomy > div { border-top: 1px solid var(--line); }
+      .anatomy > div:first-child { border-top: 0; }
+      .wrap { padding: 36px 18px 80px; }
+      h1 { font-size: 38px; }
+      h2 { font-size: 22px; }
+      .topbar { padding: 12px 18px; }
+      .navlinks { gap: 14px; }
+    }
+  </style>
+</head>
+<body class="kira">
+  <div class="topbar">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-family: var(--font-jp); font-size:20px; font-weight:900; color: var(--hot); text-shadow: 0 0 12px rgba(255,31,109,0.5);">煌</span>
+      <span style="font-family: var(--font-display); font-size:14px; letter-spacing:0.12em;">KIRA</span>
+      <div class="pipe"></div>
+      <span style="font-size:12px; color: var(--muted); font-family: var(--font-mono);">strategy brief</span>
+    </div>
+    <div class="navlinks">
+      <a href="index.html">Design canvas</a>
+      <a href="tech-brief.html">Tech brief</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="eyebrow">DELIVERABLES — 1 · WIREFRAMES · 2 · COMPONENTS · 3 · AGE-GATE</div>
+    <h1>The strategy<br/>behind the system.</h1>
+    <p class="lede">
+      A focused brief on the three asks: a complete sitemap with low-fi wireframes
+      for the headline screens, component-level anatomy for Homepage / Title / Reader,
+      and the architecture that lets the 18+ section exist without contaminating SEO
+      or ad-network compliance.
+    </p>
+
+    <h3>Already shipped — context for what this builds on</h3>
+    <div class="delivered">
+      <a href="index.html">
+        <span class="small">DESIGN</span>
+        <span class="name">Design canvas →</span>
+        <span class="meta">11 hi-fi artboards across 6 sections · neon-shōnen system · Tweaks panel for live variations.</span>
+      </a>
+      <a href="tech-brief.html">
+        <span class="small">ENGINEERING</span>
+        <span class="name">Tech brief →</span>
+        <span class="meta">DB schema, AI integration map, automated SEO content engine, full tech stack rationale, risk register.</span>
+      </a>
+      <a href="code/README.md">
+        <span class="small">CODE</span>
+        <span class="name">Next.js codebase →</span>
+        <span class="meta">Working app — RSC discovery feed, MangaDex reader, AI search SSE stream, age-gate middleware.</span>
+      </a>
+    </div>
+
+
+    <!-- ─────────────────────── 01 ─────────────────────── -->
+    <h2><span class="n">01</span> Sitemap & wireframe outline</h2>
+    <p>
+      The site is organized around <b>one promise</b>: a single dark-mode home for every
+      anime, manga, comic and webcomic, with a reading-grade UI on top of the most complete
+      open metadata sources. The tree below maps every public route plus the internal
+      sub-apps that are intentionally quarantined.
+    </p>
+
+    <div class="tree">
+<span class="branch">┌─</span> <span class="route">kira.app/</span>                                    <span class="desc">— Discovery homepage (SSR + ISR 30min)</span>
+<span class="branch">│ ├─</span> <span class="route">/ask</span>                                   <span class="desc">— AI Smart Search (chat-style, LLM-ranked)</span>
+<span class="branch">│ ├─</span> <span class="route">/library</span>                                <span class="desc">— User shelves: reading / planned / completed</span>
+<span class="branch">│ ├─</span> <span class="route">/title/:slug</span>                            <span class="desc">— Title detail (manga, anime, comic, webcomic)</span>
+<span class="branch">│ │  └─</span> <span class="route">/title/:slug/character/:slug</span>      <span class="desc">— Character wiki + gallery</span>
+<span class="branch">│ ├─</span> <span class="route">/read/:chapter</span>                          <span class="desc">— Immersive reader (vertical / LTR / RTL)</span>
+<span class="branch">│ ├─</span> <span class="route">/watch/:episode</span>                         <span class="desc">— Embedded official streaming (link-out by default)</span>
+<span class="branch">│ ├─</span> <span class="route">/shorts</span>                                 <span class="desc">— TikTok-style vertical feed</span>
+<span class="branch">│ ├─</span> <span class="route">/me</span>                                     <span class="desc">— Profile: streaks, badges, XP, quests</span>
+<span class="branch">│ ├─</span> <span class="route">/sitemap.xml · /robots.txt</span>              <span class="desc">— Partitioned per type; mature paths disallowed</span>
+<span class="branch">│ └─</span> <span class="api">/api/{jikan, anilist, search, age-gate}</span>  <span class="desc">— Proxies + AI SSE stream</span>
+<span class="branch">│</span>
+<span class="branch">├─</span> <span class="gate">[ AGE-GATE WALL · kira_18 cookie ] ──────────────────────────────────────</span>
+<span class="branch">│</span>
+<span class="branch">├─</span> <span class="route">kira.app/m/</span>                                  <span class="desc">— Mature library landing (on same domain)</span>
+<span class="branch">│ ├─</span> <span class="route">/m/title/:slug</span>                          <span class="desc">— Adult-rated title detail</span>
+<span class="branch">│ └─</span> <span class="route">/m/character/:slug</span>                      <span class="desc">— "Hot character" galleries, upvote/downvote</span>
+<span class="branch">│</span>
+<span class="branch">└─</span> <span class="muted">SEPARATED SUB-APPS</span>
+   <span class="branch">├─</span> <span class="violet">m.kira.app</span>                                  <span class="desc">— Optional sub-domain split (production / ads-safe)</span>
+   <span class="branch">├─</span> <span class="muted">studio.kira.app</span>                            <span class="desc">— Creator portal · KYC, uploads, analytics</span>
+   <span class="branch">└─</span> <span class="muted">api.kira.app</span>                               <span class="desc">— Public read-only API · rate-limited</span>
+    </div>
+
+    <h3>Low-fi wireframes — three hero screens</h3>
+    <p>
+      Annotated as block diagrams rather than finished UI — the hi-fi is in the
+      <a href="index.html" style="color: var(--hot)">design canvas</a>. Each region is sized
+      proportionally to its real implementation.
+    </p>
+
+    <div class="wires">
+      <!-- HOMEPAGE -->
+      <div class="wire">
+        <span class="eyebrow" style="font-size:10px;">A · HOMEPAGE</span>
+        <h4>Discovery feed</h4>
+        <div class="device">
+          <div class="bar lg"></div>
+          <div class="bar acc" style="height:140px"></div>
+          <div class="row"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+          <div class="row" style="gap:3px"><div class="block" data-label="cover"></div><div class="block" data-label="cover"></div><div class="block" data-label="cover"></div></div>
+          <div class="row" style="gap:3px"><div class="block acc" data-label="AI for you" style="aspect-ratio: 3/1; height: 50px"></div></div>
+          <div class="row" style="gap:3px"><div class="block" data-label="short"></div><div class="block" data-label="short"></div><div class="block" data-label="short"></div></div>
+        </div>
+        <div class="annot">
+          1 · brand bar w/ streak + AI search · 2 · <b>kinetic hero</b> with #1 trending + motion trailer · 3 · genre rail (kanji-led) · 4 · continue-reading w/ progress bars · 5 · <b>AI "for you"</b> recommendation list · 6 · vertical shorts strip · 7 · airing schedule. Tab bar fixed.
+        </div>
+      </div>
+
+      <!-- TITLE DETAIL -->
+      <div class="wire">
+        <span class="eyebrow" style="font-size:10px;">B · TITLE DETAIL</span>
+        <h4>Title page</h4>
+        <div class="device">
+          <div class="bar acc" style="height: 180px"></div>
+          <div class="row" style="margin-top: -22px; position: relative; z-index:2"><div class="bar acc lg"></div><div class="bar" style="max-width:34px"></div><div class="bar" style="max-width:34px"></div></div>
+          <div class="row"><div class="bar" style="max-width:54px"></div><div class="bar" style="max-width:54px"></div><div class="bar" style="max-width:54px"></div></div>
+          <div class="bar" style="height:30px"></div>
+          <div class="row" style="gap:3px"><div class="block wide" data-label="trailer"></div><div class="block wide" data-label="motion comic"></div></div>
+          <div class="row" style="gap:3px"><div class="block wide acc" data-label="where to read · 3 links"></div></div>
+          <div class="bar" style="height: 26px"></div>
+          <div class="row" style="gap:3px"><div class="block wide" data-label="ch. 47 · NEW"></div></div>
+          <div class="row" style="gap:3px"><div class="block wide" data-label="ch. 46"></div></div>
+        </div>
+        <div class="annot">
+          1 · full-bleed cover w/ auto-trailer pill · 2 · big CTAs (Read / Save / Notify) · 3 · genre + mature tags · 4 · AI-rewritten synopsis (badged) · 5 · trailer + motion-comic rail · 6 · <b>"where to watch officially"</b> · 7 · chapter list newest-first · 8 · character rail + related shorts.
+        </div>
+      </div>
+
+      <!-- READER -->
+      <div class="wire">
+        <span class="eyebrow" style="font-size:10px;">C · MANGA READER</span>
+        <h4>Immersive reader</h4>
+        <div class="device" style="background: #1a1a1a">
+          <div class="row" style="gap:6px"><div class="bar" style="max-width:30px"></div><div class="bar" style="flex:0 0 70%"></div></div>
+          <div class="block tall" data-label="page 1" style="background: #ede9dd"></div>
+          <div class="block tall" data-label="page 2" style="background: #ede9dd"></div>
+          <div class="block tall" data-label="page 3" style="background: #ede9dd"></div>
+          <div class="block wide acc" data-label="read-along · JP" style="height: 38px"></div>
+          <div class="row"><div class="bar gold" style="height: 4px"></div></div>
+          <div class="row"><div class="bar" style="max-width:18px"></div><div class="bar" style="max-width:18px"></div><div class="bar" style="max-width:18px"></div><div class="bar" style="max-width:60px"></div></div>
+        </div>
+        <div class="annot">
+          1 · auto-hide chrome (tap to toggle) · 2 · <b>three orientations</b>: vertical webtoon / LTR / RTL · 3 · real chapter pages from MangaDex · 4 · <b>Read-Along JP overlay</b> — tap kanji for kana + meaning · 5 · live progress bar + heart/comment/bookmark · 6 · mode segmented control · 7 · prefs persist in localStorage.
+        </div>
+      </div>
+    </div>
+
+
+    <!-- ─────────────────────── 02 ─────────────────────── -->
+    <h2><span class="n">02</span> Component anatomy</h2>
+    <p>Block-by-block specification for the three hero screens. Every row maps 1:1 to a real component in the codebase — file paths in <code style="color: var(--hot); font-family: var(--font-mono); font-size: 12px;">code/components/*</code>.</p>
+
+    <h3>A · Homepage <span style="color: var(--muted); font-size:14px; font-weight:400;">/components/DiscoveryFeed.tsx</span></h3>
+    <div class="anatomy">
+      <div class="key">Top bar<code>MobileTopBar / DesktopNav</code></div>
+      <div class="val"><span class="tag hot">SSR · STICKY</span> Brand mark · reading-streak chip (gold, daily reset) · AI-search trigger · profile avatar with active-status ring. Desktop swaps to a sidebar (200px), mobile keeps the brand at the top + bottom tab bar.</div>
+
+      <div class="key">Hot ticker<code>HomeMarquee</code></div>
+      <div class="val"><span class="tag jade">LIVE</span> Marquee of "new chapter dropped," "X reading now," "trailer just landed." Live counts hydrate via SSE so the home feels alive without a page reload.</div>
+
+      <div class="key">Hero<code>DiscoveryHero</code></div>
+      <div class="val"><span class="tag hot">LCP CRITICAL</span> #1 trending title, full-bleed cover. Auto-play trailer pill (muted, on hover). Genre tags, AI-truncated synopsis, two CTAs (<i>Read now</i> / <i>Save</i>). Side rails show live read count + comment count.</div>
+
+      <div class="key">Genre rail<code>HomeGenreRail</code></div>
+      <div class="val">Kanji-first chips: 少年 / 青年 / 少女 / 異世界 / ホラー / 日常. Each tap deep-links to a filtered library route.</div>
+
+      <div class="key">Continue reading<code>HomeContinueReading</code></div>
+      <div class="val"><span class="tag jade">PERSONAL</span> User's in-progress titles. Each card has a hot-glow progress bar in the bottom 3px of the cover. Source: <code style="font-family: var(--font-mono); color: var(--hot); font-size: 11px;">progress</code> table.</div>
+
+      <div class="key">Shorts strip<code>HomeShortsStrip</code></div>
+      <div class="val"><span class="tag gold">VIRAL HOOK</span> Vertical 9:16 video tiles · creator handles · view counts · <b>"Make one" CTA</b> sends you into the Shorts Studio.</div>
+
+      <div class="key">For You<code>HomeForYou</code></div>
+      <div class="val"><span class="tag ice">AI</span> Two-tower recommender (user embeddings × title embeddings) re-ranked by an LLM that explains the pick — <i>"if you liked Berserk"</i>. % match shown.</div>
+
+      <div class="key">Schedule<code>HomeSchedule</code></div>
+      <div class="val">Weekly grid (M–S) with today highlighted. Per-day shows next airing in your timezone + bell-notify per row.</div>
+    </div>
+
+    <h3>B · Title detail <span style="color: var(--muted); font-size:14px; font-weight:400;">/app/title/[slug]/page.tsx</span></h3>
+    <div class="anatomy">
+      <div class="key">Hero banner<code>TitleHero</code></div>
+      <div class="val"><span class="tag hot">SSR · OG</span> Full-bleed cover/banner with manga-page gradient fade. JP title in <code>kira-jp</code> · English title in display font · ★ rating, year, airing pill. <b>Auto-playing trailer pill</b> for anime adaptations.</div>
+
+      <div class="key">CTAs<code>TitleCTAs</code></div>
+      <div class="val">Primary: <i>Read latest chapter</i> (jumps into reader) · Save (bookmark, syncs to library) · Notify (push when new ch. drops).</div>
+
+      <div class="key">Synopsis<code>TitleSynopsis</code></div>
+      <div class="val"><span class="tag ice">SEO ENGINE</span> AI-rewritten brand-voice copy. Source-attribution badge below ("AI-rewritten · 0% overlap with Fandom wiki"). Original API synopsis kept only in metadata for fallback.</div>
+
+      <div class="key">Trailers / motion<code>TitleTrailerStrip</code></div>
+      <div class="val">Horizontal rail of 16:9 thumbs — official trailer · motion-manga preview · fan AMVs. Each plays in a vertical lightbox on tap.</div>
+
+      <div class="key">Where to watch<code>TitleWhereToWatch</code></div>
+      <div class="val"><span class="tag gold">SEO + LEGAL</span> Crunchyroll / Netflix / MangaPlus / Bookwalker — <b>official sources only</b>. Each card has platform color chip + cost tag (Free / Premium / Included). Outbound links are nofollow.</div>
+
+      <div class="key">Chapter list<code>TitleChapters</code></div>
+      <div class="val">Newest-first by default with toggle. Read-status check, "NEW" pulse for last 24h drops, opacity dim for read items. Real list comes from MangaDex <code style="font-family: var(--font-mono); color: var(--hot); font-size: 11px;">/manga/&#123;id&#125;/feed</code>.</div>
+
+      <div class="key">Characters<code>TitleCharacters</code></div>
+      <div class="val">Horizontal rail of character thumbs. Each links to the wiki sub-page (galleries + lore + relationships + fan ranking).</div>
+
+      <div class="key">Related shorts<code>TitleRelatedShorts</code></div>
+      <div class="val"><span class="tag gold">VIRAL HOOK</span> "Fans are clipping Ch. 47 right now · 2,141 shorts" — single big CTA into the Shorts Studio, scoped to this title.</div>
+    </div>
+
+    <h3>C · Manga reader <span style="color: var(--muted); font-size:14px; font-weight:400;">/components/Reader.tsx</span></h3>
+    <div class="anatomy">
+      <div class="key">Chrome top<code>TopChrome</code></div>
+      <div class="val"><span class="tag">AUTO-HIDE</span> Back arrow · title + chapter line · settings · menu. Tap-anywhere on the page area toggles visibility (TikTok-style).</div>
+
+      <div class="key">Page surface<code>ReaderVertical / ReaderHorizontal</code></div>
+      <div class="val">
+        <span class="tag hot">CORE</span>
+        Three modes share the same <code>PageView</code> primitive — only the container differs:
+        <ul style="margin-top: 8px;">
+          <li><b>Vertical:</b> infinite scroll, page-divider markers, lazy-loaded images, auto-checkpoint every 5s.</li>
+          <li><b>LTR / RTL:</b> single-page with swipe gestures and tap-zones; arrow icons mirror direction.</li>
+        </ul>
+        Pages come from MangaDex MD@Home (<code style="font-family: var(--font-mono); color: var(--hot); font-size: 11px;">/at-home/server/&#123;chapterId&#125;</code>), rendered as plain &lt;img&gt; (CORS-safe).
+      </div>
+
+      <div class="key">Read-Along overlay<code>ReadAlongOverlay</code></div>
+      <div class="val"><span class="tag ice">JP TUTOR</span> Toggleable. Renders invisible tap-targets over OCR'd JP text bounding boxes. Tap → tooltip with kana + meaning + JLPT level + audio. Words banked into a spaced-repetition deck for daily review email.</div>
+
+      <div class="key">Chrome bottom<code>BottomChrome</code></div>
+      <div class="val">
+        <span class="tag gold">STICKY</span> Live progress bar (hot-glow fill) · page counter · heart / comment / bookmark · Read-Along toggle · <b>VERT / LTR / RTL</b> segmented control (persists in localStorage).
+      </div>
+
+      <div class="key">End-of-chapter card<code>EndOfChapter</code></div>
+      <div class="val">"Next chapter in 5d 14h" with bell-notify CTA. If there's a next chapter available, big "Continue" button instead.</div>
+    </div>
+
+
+    <!-- ─────────────────────── 03 ─────────────────────── -->
+    <h2><span class="n">03</span> 18+ age-gate · SEO architecture</h2>
+    <p>
+      The mature library exists, can be accessed, and <b>never touches the main domain's
+      indexable surface</b>. This is the bit that protects ad-network deals, App Store
+      reviews, and Google brand-safety classification. Two architectures are supported;
+      MVP runs the lighter one.
+    </p>
+
+    <h3>Architecture A · Same-domain isolation <span class="tag jade" style="margin-left: 6px;">MVP</span></h3>
+    <div class="gateflow">
+<div class="ascii">
+       <span class="muted">Anonymous request</span>
+              <span class="muted">│</span>
+              <span class="muted">▼</span>
+    ┌──────────────────────┐
+    │  <span class="hot">middleware.ts</span>       │   <span class="muted">runs on the edge for every req</span>
+    │  match: /m/* /mature │
+    └──────────┬───────────┘
+               <span class="muted">│</span>
+       ┌───────┴───────┐
+       <span class="muted">│</span>               <span class="muted">│</span>
+   <span class="hot">cookie?</span>             <span class="hot">no cookie</span>
+       <span class="muted">│</span>               <span class="muted">│</span>
+       <span class="muted">▼</span>               <span class="muted">▼</span>
+   <span class="jade">allow</span>           302 → <span class="violet">/age-gate?return=...</span>
+       <span class="muted">│</span>               <span class="muted">│</span>
+       <span class="muted">▼</span>          confirm 3 consent rows
+   <span class="violet">/m/*</span>                <span class="muted">│</span>
+       <span class="muted">│</span>               <span class="muted">▼</span>
+       <span class="muted">│</span>          POST <span class="ice">/api/age-gate</span>
+       <span class="muted">│</span>          Set-Cookie: <span class="hot">kira_18=1</span>
+       <span class="muted">│</span>          httpOnly · secure · sameSite=lax
+       <span class="muted">│</span>          maxAge: 90 days
+       <span class="muted">│</span>               <span class="muted">│</span>
+       <span class="muted">▼</span>               <span class="muted">▼</span>
+   <span class="violet">mature library</span>  redirect to /m/*
+</div>
+    </div>
+
+    <h3>Architecture B · Sub-domain split <span class="tag violet" style="margin-left: 6px;">PRODUCTION</span></h3>
+    <p>
+      Once revenue justifies the ops cost, move <code style="font-family: var(--font-mono); color: var(--hot); font-size: 12px;">/m/*</code> to <code style="font-family: var(--font-mono); color: var(--violet); font-size: 12px;">m.kira.app</code>. The age-gate flow is identical;
+      the win is that <b>Google sees two distinct sites</b> and never lets mature pages contaminate <code style="font-family: var(--font-mono); color: var(--hot); font-size: 12px;">kira.app</code>'s search profile. Most ad networks classify by registered domain — having a second one keeps your main inventory clean.
+    </p>
+
+    <h3>SEO isolation rules</h3>
+    <div class="cards">
+      <div class="card hot">
+        <h4>1 · No crawl, ever</h4>
+        <p><code style="font-family: var(--font-mono); color: var(--hot); font-size: 11px;">robots.ts</code> disallows <code style="font-family: var(--font-mono); font-size: 11px;">/m/</code>, <code style="font-family: var(--font-mono); font-size: 11px;">/mature/</code>, <code style="font-family: var(--font-mono); font-size: 11px;">/api/</code>, <code style="font-family: var(--font-mono); font-size: 11px;">/age-gate</code>. Every mature page also emits <code style="font-family: var(--font-mono); font-size: 11px;">noindex,nofollow</code> via <code style="font-family: var(--font-mono); font-size: 11px;">metadata.robots</code> as belt-and-braces.</p>
+      </div>
+      <div class="card">
+        <h4>2 · No cross-linking</h4>
+        <p>Main feed never includes mature titles. The only entry-point on <code style="font-family: var(--font-mono); font-size: 11px;">kira.app</code> is the deliberate <b>"18+" link in nav</b> — a single anchor with <code style="font-family: var(--font-mono); font-size: 11px;">rel="nofollow"</code> + <code style="font-family: var(--font-mono); font-size: 11px;">data-mature</code>.</p>
+      </div>
+      <div class="card">
+        <h4>3 · No shared sitemap</h4>
+        <p>Mature pages are excluded from <code style="font-family: var(--font-mono); font-size: 11px;">sitemap-titles.xml</code>. If you go sub-domain (B), mature gets its own sitemap on <code style="font-family: var(--font-mono); color: var(--violet); font-size: 11px;">m.kira.app/sitemap.xml</code>.</p>
+      </div>
+      <div class="card jade">
+        <h4>4 · No shared cookies</h4>
+        <p>The recommender, watchlist and read-progress run on a session keyed by sub-domain (architecture B) or a separate session ID + path-scoped cookies (architecture A). Mature reads <b>never</b> influence main-feed recs.</p>
+      </div>
+      <div class="card">
+        <h4>5 · Hard rating filter</h4>
+        <p>Ingestion sets <code style="font-family: var(--font-mono); font-size: 11px;">title.mature = true</code> from MangaDex <code style="font-family: var(--font-mono); font-size: 11px;">contentRating ∈ {erotica, pornographic}</code> or AniList <code style="font-family: var(--font-mono); font-size: 11px;">isAdult</code>. Every query against the main feed is filtered server-side.</p>
+      </div>
+      <div class="card violet">
+        <h4>6 · OG / Twitter cards</h4>
+        <p>Mature pages strip <code style="font-family: var(--font-mono); font-size: 11px;">og:image</code> and use a generic "18+ restricted" placeholder. Embeds on Discord/Slack never reveal cover art.</p>
+      </div>
+    </div>
+
+    <h3>Implementation checklist</h3>
+    <ul class="checklist">
+      <li><b>Edge middleware</b> on <code style="font-family: var(--font-mono); font-size: 11px;">/m/*</code> + <code style="font-family: var(--font-mono); font-size: 11px;">/mature/*</code> — 302 to <code style="font-family: var(--font-mono); font-size: 11px;">/age-gate?return=&lt;path&gt;</code> when <code style="font-family: var(--font-mono); font-size: 11px;">kira_18</code> cookie absent.</li>
+      <li><b>Cookie</b>: <code style="font-family: var(--font-mono); font-size: 11px;">kira_18=1</code>, <code style="font-family: var(--font-mono); font-size: 11px;">HttpOnly</code>, <code style="font-family: var(--font-mono); font-size: 11px;">Secure</code>, <code style="font-family: var(--font-mono); font-size: 11px;">SameSite=Lax</code>, 90 days. Set only via <code style="font-family: var(--font-mono); font-size: 11px;">POST /api/age-gate</code> with explicit consent payload.</li>
+      <li><b>Age-gate page</b>: three mandatory consent rows (18+, not in public, understand main feed stays SFW). No skip path that auto-confirms.</li>
+      <li><b>robots.txt</b> disallows mature paths. <b>sitemap.xml</b> excludes them. <b>meta robots noindex,nofollow</b> on every mature page.</li>
+      <li><b>nofollow</b> on the single nav "18+" link. No mature title appears in <code style="font-family: var(--font-mono); font-size: 11px;">/sitemap.xml</code>, RSS feeds, or any internal recommendation surface.</li>
+      <li><b>Search index</b> — query path always filters <code style="font-family: var(--font-mono); font-size: 11px;">WHERE mature = false</code> unless the request originates from <code style="font-family: var(--font-mono); font-size: 11px;">/m/*</code>.</li>
+      <li class="warn"><b>Production cutover</b> — once monetizing, migrate to <code style="font-family: var(--font-mono); color: var(--violet); font-size: 11px;">m.kira.app</code>. Cookie domain stays per-host; auth uses cross-domain SSO via JWT.</li>
+      <li class="warn"><b>Compliance review</b> — confirm with current ad-network ToS before going live in your region. App Store requires age-gate <i>+</i> rating &gt;= 17+ in store listing for the mature feature.</li>
+    </ul>
+
+
+    <p style="margin-top: 72px; text-align: center; font-size: 12px; color: var(--muted);">
+      KIRA · 煌 · strategy brief · 2026 · <a href="index.html" style="color: var(--hot);">design canvas</a> · <a href="tech-brief.html" style="color: var(--hot);">tech brief</a>
+    </p>
+  </div>
+</body>
+</html>

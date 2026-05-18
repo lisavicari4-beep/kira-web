@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>KIRA — Manga/Anime Platform Design</title>
+  <link rel="stylesheet" href="styles/tokens.css"/>
+  <style>
+    html, body { margin: 0; background: #f0eee9; }
+    body { font-family: 'Space Grotesk', system-ui, sans-serif; }
+  </style>
+
+  <!-- React + Babel (pinned) -->
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <!-- Starter components -->
+  <script type="text/babel" src="design-canvas.jsx"></script>
+  <script type="text/babel" src="ios-frame.jsx"></script>
+  <script type="text/babel" src="browser-window.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <!-- Shared visual atoms -->
+  <script type="text/babel" src="screens/_shared.jsx"></script>
+
+  <!-- Screens -->
+  <script type="text/babel" src="screens/Homepage.jsx"></script>
+  <script type="text/babel" src="screens/TitleDetail.jsx"></script>
+  <script type="text/babel" src="screens/CharacterWiki.jsx"></script>
+  <script type="text/babel" src="screens/Reader.jsx"></script>
+  <script type="text/babel" src="screens/AISearch.jsx"></script>
+  <script type="text/babel" src="screens/ShortsStudio.jsx"></script>
+  <script type="text/babel" src="screens/Profile.jsx"></script>
+  <script type="text/babel" src="screens/AgeGate.jsx"></script>
+
+  <script type="text/babel">
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "readerMode": "vertical",
+      "readAlong": true,
+      "gamification": true
+    }/*EDITMODE-END*/;
+
+    function App() {
+      const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+      return (
+        <>
+          <DesignCanvas minScale={0.08} maxScale={3}>
+            <DCSection id="intro" title="KIRA" subtitle="Next-gen manga / anime / webcomic platform · neon-shōnen system · 9 surfaces">
+              <DCArtboard id="cover" label="System overview" width={680} height={880}>
+                <SystemOverview/>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="discovery" title="01 · Discovery" subtitle="Homepage feed — manga ink, kinetic energy, AI-tuned shelves">
+              <DCArtboard id="home" label="Homepage · mobile" width={410} height={880}>
+                <HomepageMobile gamification={t.gamification}/>
+              </DCArtboard>
+              <DCArtboard id="search" label="AI Smart Search" width={410} height={880}>
+                <AISearchMobile/>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="titles" title="02 · Title & Lore" subtitle="Where viewers learn what to watch, read & worship">
+              <DCArtboard id="title" label="Title detail" width={410} height={880}>
+                <TitleDetailMobile/>
+              </DCArtboard>
+              <DCArtboard id="char" label="Character wiki" width={410} height={880}>
+                <CharacterWikiMobile/>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="reader" title="03 · Immersive reader" subtitle="Three orientations · Read-Along overlay (toggle in Tweaks)">
+              <DCArtboard id="vertical" label="Vertical scroll · webtoon" width={410} height={880}>
+                <ReaderMobile mode="vertical" readAlong={t.readAlong}/>
+              </DCArtboard>
+              <DCArtboard id="ltr" label="Left → Right · classic" width={410} height={880}>
+                <ReaderMobile mode="ltr" readAlong={t.readAlong}/>
+              </DCArtboard>
+              <DCArtboard id="rtl" label="Right → Left · manga" width={410} height={880}>
+                <ReaderMobile mode="rtl" readAlong={t.readAlong}/>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="viral" title="04 · Viral · Shorts Studio" subtitle="Built-in panel-to-video editor — desktop">
+              <DCArtboard id="studio" label="Shorts Studio · desktop" width={1280} height={820}>
+                <BrowserWindowWrap>
+                  <ShortsStudioDesktop/>
+                </BrowserWindowWrap>
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection id="retention" title="05 · Retention & Community" subtitle="Profile, gamification, age-gated mature library">
+              <DCArtboard id="profile" label="Profile · gamification" width={410} height={880}>
+                <ProfileMobile/>
+              </DCArtboard>
+              <DCArtboard id="agegate" label="Age-gate · 18+" width={410} height={880}>
+                <AgeGateMobile/>
+              </DCArtboard>
+              <DCArtboard id="brief" label="Tech brief · companion" width={410} height={880}>
+                <TechBriefCard/>
+              </DCArtboard>
+              <DCArtboard id="strategy" label="Strategy brief · wireframes + age-gate" width={410} height={880}>
+                <StrategyBriefCard/>
+              </DCArtboard>
+            </DCSection>
+          </DesignCanvas>
+
+          <TweaksPanel title="Tweaks">
+            <TweakSection label="Reader"/>
+            <TweakRadio label="Orientation" value={t.readerMode}
+              options={['vertical', 'ltr', 'rtl']}
+              onChange={(v) => setTweak('readerMode', v)}/>
+            <TweakToggle label="Read-Along overlay" value={t.readAlong}
+              onChange={(v) => setTweak('readAlong', v)}/>
+            <TweakSection label="Community"/>
+            <TweakToggle label="Gamification chrome" value={t.gamification}
+              onChange={(v) => setTweak('gamification', v)}/>
+            <div style={{ marginTop: 8, padding: 10, background: 'rgba(255,31,109,0.08)', borderRadius: 8, border: '1px solid rgba(255,31,109,0.25)' }}>
+              <div style={{ fontWeight: 600, color: '#ff1f6d', marginBottom: 4 }}>About Reader · Orientation</div>
+              <div style={{ fontSize: 10.5, color: '#5a4a2a', lineHeight: 1.4 }}>
+                The 3 reader artboards above show all orientations simultaneously. This tweak doesn't gate them — it's exposed so the prototype mirrors a real preference setting users would toggle in-app.
+              </div>
+            </div>
+          </TweaksPanel>
+        </>
+      );
+    }
+
+    // ───────────── System overview card (intro) ─────────────
+    function SystemOverview() {
+      return (
+        <div className="kira" style={{
+          width: '100%', height: '100%', padding: '32px 32px 24px',
+          background: 'radial-gradient(circle at 80% 5%, rgba(255,31,109,0.18), transparent 50%), var(--bg-0)',
+          color: 'var(--text)', display: 'flex', flexDirection: 'column',
+          fontFamily: 'var(--font-ui)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <KiraLogo size={20} glow/>
+            <span className="kira-mono" style={{ fontSize: 11, color: 'var(--muted)' }}>v0.1 · system overview</span>
+          </div>
+
+          <div style={{ marginTop: 28 }}>
+            <div className="kira-hit" style={{ fontSize: 11, color: 'var(--hot)', letterSpacing: '0.22em' }}>NEXT-GEN · ANIME · MANGA · WEBCOMICS</div>
+            <h1 className="kira-display" style={{
+              margin: '8px 0 0', fontSize: 58, lineHeight: 0.95,
+              color: 'var(--text)', letterSpacing: '-0.025em',
+            }}>The platform<br/>that ate<br/><span style={{ color: 'var(--hot)', textShadow: '0 0 24px rgba(255,31,109,0.5)' }}>the manga internet.</span></h1>
+            <p style={{
+              margin: '20px 0 0', maxWidth: 520, fontSize: 14, lineHeight: 1.55, color: 'var(--text-2)',
+            }}>
+              A dark, kinetic reading + watching + sharing app for the manga, anime,
+              comic and webcomic universe. AI-tuned discovery, motion-comics, an inbuilt
+              short-video studio, and a Read-Along language tool that turns every panel
+              into a Japanese lesson.
+            </p>
+          </div>
+
+          <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, marginTop: 32 }}>
+            {[
+              { n: '01', t: 'Discovery', s: 'Manga-ink homepage · AI Smart Search', acc: 'var(--hot)' },
+              { n: '02', t: 'Title & Lore', s: 'Detail pages · character wikis', acc: 'var(--ice)' },
+              { n: '03', t: 'Reader', s: 'Vert · LTR · RTL · Read-Along JP', acc: 'var(--violet)' },
+              { n: '04', t: 'Shorts Studio', s: 'Panels → TikTok/Reels editor', acc: 'var(--gold)' },
+              { n: '05', t: 'Retention', s: 'Streaks · badges · quests', acc: 'var(--jade)' },
+              { n: '06', t: 'Mature library', s: 'Age-gated · SEO-safe sub-app', acc: 'var(--violet)' },
+            ].map((c, i) => (
+              <div key={i} style={{
+                background: 'var(--bg-1)', border: '1px solid var(--line)',
+                borderRadius: 14, padding: '16px 14px',
+                display: 'flex', flexDirection: 'column', gap: 4,
+              }}>
+                <span className="kira-display" style={{ fontSize: 22, color: c.acc, lineHeight: 1 }}>{c.n}</span>
+                <span style={{ fontSize: 13, fontWeight: 700, marginTop: 6 }}>{c.t}</span>
+                <span style={{ fontSize: 11, color: 'var(--muted)' }}>{c.s}</span>
+              </div>
+            ))}
+          </div>
+
+          <div style={{
+            marginTop: 18, padding: '12px 16px',
+            background: 'rgba(255,212,0,0.08)',
+            border: '1px solid rgba(255,212,0,0.25)', borderRadius: 10,
+            display: 'flex', alignItems: 'center', gap: 12,
+          }}>
+            <Icon name="sparkles" size={16} color="var(--gold)"/>
+            <span style={{ fontSize: 12, color: 'var(--text-2)' }}>
+              <b style={{ color: 'var(--gold)' }}>Pan / zoom this canvas.</b> Click any artboard label to focus it · ↑/↓ jumps between sections · ←/→ within. Right-click an artboard for PNG/HTML export.
+            </span>
+          </div>
+        </div>
+      );
+    }
+
+    // Wrap the Shorts Studio in a chrome browser window
+    function BrowserWindowWrap({ children }) {
+      return (
+        <div style={{ width: '100%', height: '100%', background: '#202124', display: 'flex', flexDirection: 'column' }}>
+          <ChromeTabBar tabs={[
+            { title: 'KIRA Studio — Crimson Lotus Ch.47 cut' },
+            { title: 'KIRA · Library' },
+            { title: 'TikTok Studio' },
+          ]} activeIndex={0}/>
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 8, padding: '6px 14px',
+            background: '#202124', borderTop: '1px solid #2a2a2e',
+          }}>
+            <Icon name="chevron-left" size={16} color="#9aa0a6"/>
+            <Icon name="chevron-right" size={16} color="#9aa0a6"/>
+            <div style={{
+              flex: 1, height: 28, borderRadius: 14, background: '#282a2d',
+              padding: '0 12px', display: 'flex', alignItems: 'center', gap: 6,
+              fontSize: 12, color: '#e8eaed',
+            }}>
+              <Icon name="shield" size={11} color="#9aa0a6"/>
+              <span style={{ color: '#9aa0a6' }}>studio.</span>kira.app<span style={{ color: '#9aa0a6' }}>/edit/crimson-lotus-ch47</span>
+            </div>
+          </div>
+          <div style={{ flex: 1, minHeight: 0 }}>{children}</div>
+        </div>
+      );
+    }
+
+    // Tech brief: card linking to the companion HTML doc
+    function TechBriefCard() {
+      return (
+        <div className="kira" style={{
+          width: '100%', height: '100%',
+          background: 'radial-gradient(circle at 50% -10%, rgba(255,31,109,0.2), transparent 50%), var(--bg-0)',
+          color: 'var(--text)', display: 'flex', flexDirection: 'column',
+          fontFamily: 'var(--font-ui)', padding: '120px 32px 40px',
+          alignItems: 'center', textAlign: 'center',
+        }}>
+          <div style={{
+            width: 90, height: 90, borderRadius: 18,
+            background: 'rgba(255,31,109,0.08)', border: '1px solid rgba(255,31,109,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24,
+          }}>
+            <Icon name="sparkles" size={36} color="var(--hot)"/>
+          </div>
+          <div className="kira-hit" style={{ fontSize: 11, color: 'var(--hot)', letterSpacing: '0.2em' }}>SUPPLEMENT</div>
+          <h2 className="kira-display" style={{ margin: '8px 0 12px', fontSize: 32, lineHeight: 1.05 }}>Technical Brief</h2>
+          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 280 }}>
+            Sitemap, tech stack, AI integration map, automated SEO content engine — opens as a separate document.
+          </p>
+          <a href="tech-brief.html" target="_top" className="kira-btn kira-btn-hot" style={{
+            marginTop: 24, padding: '12px 24px', fontSize: 13,
+            textDecoration: 'none', color: '#fff',
+          }}>
+            Open tech brief →
+          </a>
+          <div style={{ marginTop: 'auto', fontSize: 10, color: 'var(--muted)', textAlign: 'center', lineHeight: 1.5 }}>
+            Includes:
+            <div style={{ color: 'var(--text-2)', marginTop: 4 }}>
+              Sitemap · User flows · DB schema · API ingestion (Jikan / AniList) · SEO content engine · Tech stack
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Strategy brief: wireframes + component anatomy + age-gate SEO
+    function StrategyBriefCard() {
+      return (
+        <div className="kira" style={{
+          width: '100%', height: '100%',
+          background: 'radial-gradient(circle at 50% -10%, rgba(184,85,255,0.22), transparent 50%), var(--bg-0)',
+          color: 'var(--text)', display: 'flex', flexDirection: 'column',
+          fontFamily: 'var(--font-ui)', padding: '120px 32px 40px',
+          alignItems: 'center', textAlign: 'center',
+        }}>
+          <div style={{
+            width: 90, height: 90, borderRadius: 18,
+            background: 'rgba(184,85,255,0.08)', border: '1px solid rgba(184,85,255,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24,
+          }}>
+            <Icon name="shield" size={36} color="var(--violet)"/>
+          </div>
+          <div className="kira-hit" style={{ fontSize: 11, color: 'var(--violet)', letterSpacing: '0.2em' }}>DELIVERABLES</div>
+          <h2 className="kira-display" style={{ margin: '8px 0 12px', fontSize: 32, lineHeight: 1.05 }}>Strategy Brief</h2>
+          <p style={{ margin: 0, fontSize: 13, color: 'var(--text-2)', lineHeight: 1.5, maxWidth: 290 }}>
+            Wireframe sitemap · component anatomy for Homepage / Title / Reader · the 18+ age-gate SEO architecture.
+          </p>
+          <a href="strategy-brief.html" target="_top" className="kira-btn" style={{
+            marginTop: 24, padding: '12px 24px', fontSize: 13,
+            textDecoration: 'none', color: '#fff',
+            background: 'var(--violet)', borderColor: 'transparent',
+            boxShadow: '0 0 24px rgba(184,85,255,0.4)',
+          }}>
+            Open strategy brief →
+          </a>
+          <div style={{ marginTop: 'auto', fontSize: 10, color: 'var(--muted)', textAlign: 'center', lineHeight: 1.5 }}>
+            Three deliverables:
+            <div style={{ color: 'var(--text-2)', marginTop: 4 }}>
+              ① Sitemap + low-fi wireframes · ② Block-by-block component anatomy · ③ Age-gate architecture (A: same-domain / B: subdomain)
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+  </script>
+</body>
+</html>

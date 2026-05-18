@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>KIRA · Technical Brief</title>
+  <link rel="stylesheet" href="styles/tokens.css"/>
+  <style>
+    html, body { margin: 0; background: var(--bg-0); color: var(--text); font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 80px 40px 120px; }
+    .eyebrow { font-family: var(--font-hit); font-size: 12px; letter-spacing: 0.22em; color: var(--hot); text-transform: uppercase; }
+    h1 { font-family: var(--font-display); font-size: 56px; line-height: 1; letter-spacing: -0.025em; margin: 12px 0 0; }
+    h2 { font-family: var(--font-display); font-size: 28px; letter-spacing: -0.02em; margin: 64px 0 4px; display: flex; align-items: center; gap: 12px; }
+    h2 .n { font-family: var(--font-hit); font-size: 14px; color: var(--hot); letter-spacing: 0.15em; padding: 4px 9px; border: 1px solid rgba(255,31,109,0.45); border-radius: 4px; background: rgba(255,31,109,0.06); }
+    h3 { font-family: var(--font-display); font-size: 17px; margin: 28px 0 8px; color: var(--text); }
+    p, li { font-size: 14.5px; line-height: 1.65; color: var(--text-2); }
+    .lede { font-size: 17px; line-height: 1.55; color: var(--text-2); margin-top: 20px; max-width: 760px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { background: var(--bg-1); border: 1px solid var(--line); border-radius: 14px; padding: 22px; }
+    .card.hot { border-color: rgba(255,31,109,0.3); background: linear-gradient(160deg, rgba(255,31,109,0.06), transparent 60%), var(--bg-1); }
+    .card h3 { margin-top: 0; }
+    .tag { display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; border: 1px solid var(--line-strong); color: var(--text-2); background: rgba(255,255,255,0.03); margin-right: 6px; }
+    .tag.hot { color: var(--hot); border-color: rgba(255,31,109,0.5); background: rgba(255,31,109,0.08); }
+    .tag.ice { color: var(--ice); border-color: rgba(94,200,255,0.5); background: rgba(94,200,255,0.08); }
+    .tag.violet { color: var(--violet); border-color: rgba(184,85,255,0.5); background: rgba(184,85,255,0.08); }
+    .tag.gold { color: var(--gold); border-color: rgba(255,212,0,0.5); background: rgba(255,212,0,0.08); }
+    .tag.jade { color: var(--jade); border-color: rgba(31,243,157,0.5); background: rgba(31,243,157,0.08); }
+    pre, code { font-family: var(--font-mono); }
+    pre { background: var(--bg-1); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; overflow-x: auto; font-size: 12.5px; line-height: 1.55; color: var(--text-2); }
+    pre .k { color: var(--hot); }
+    pre .s { color: var(--gold); }
+    pre .c { color: var(--muted); }
+    pre .v { color: var(--ice); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 18px 40px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: rgba(5,5,7,0.85); backdrop-filter: blur(12px); z-index: 10; }
+    .topbar a { color: var(--text-2); text-decoration: none; font-size: 13px; }
+    .topbar a:hover { color: var(--hot); }
+    .pipe { width: 1px; height: 14px; background: var(--line); }
+    .kbd { font-family: var(--font-mono); font-size: 11px; padding: 1px 6px; border-radius: 3px; background: var(--bg-2); border: 1px solid var(--line); color: var(--text); }
+
+    /* Sitemap flow */
+    .flow { background: var(--bg-1); border: 1px solid var(--line); border-radius: 14px; padding: 28px; margin-top: 16px; overflow-x: auto; }
+    .flow-grid { display: grid; gap: 14px; grid-template-columns: repeat(5, 1fr); min-width: 800px; }
+    .node { padding: 10px 12px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 8px; text-align: center; font-size: 12px; font-weight: 600; color: var(--text); position: relative; }
+    .node.entry { border-color: var(--hot); background: rgba(255,31,109,0.08); color: var(--hot); }
+    .node.ai { border-color: var(--ice); background: rgba(94,200,255,0.06); color: var(--ice); }
+    .node.viral { border-color: var(--gold); background: rgba(255,212,0,0.06); color: var(--gold); }
+    .node.mature { border-color: var(--violet); background: rgba(184,85,255,0.06); color: var(--violet); }
+    .node small { display: block; color: var(--muted); font-size: 9.5px; font-weight: 500; margin-top: 3px; letter-spacing: 0.05em; }
+    .node-row { display: flex; align-items: center; gap: 10px; }
+    .arrow { color: var(--muted); font-size: 14px; }
+
+    .stack { display: grid; grid-template-columns: 200px 1fr; gap: 8px 20px; padding: 12px 0; border-top: 1px solid var(--line); }
+    .stack:first-of-type { border-top: 0; padding-top: 0; }
+    .stack .layer { font-family: var(--font-hit); font-size: 11px; color: var(--hot); letter-spacing: 0.15em; padding-top: 4px; }
+
+    .pipeline { display: flex; align-items: stretch; gap: 0; margin-top: 16px; flex-wrap: nowrap; overflow-x: auto; padding-bottom: 8px; }
+    .step { flex: 1 1 0; min-width: 130px; padding: 14px 14px 14px 22px; background: var(--bg-1); border: 1px solid var(--line); border-radius: 8px; position: relative; margin-right: -6px; clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%, 12px 50%); }
+    .step:first-child { clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 50%, calc(100% - 12px) 100%, 0 100%); padding-left: 14px; }
+    .step:last-child { margin-right: 0; }
+    .step .step-n { font-family: var(--font-mono); font-size: 10px; color: var(--hot); font-weight: 700; }
+    .step .step-t { font-size: 12px; font-weight: 700; color: var(--text); margin-top: 4px; }
+    .step .step-d { font-size: 10.5px; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+    .legal-callout { padding: 14px 18px; background: rgba(255,212,0,0.06); border: 1px solid rgba(255,212,0,0.25); border-radius: 10px; display: flex; gap: 12px; margin: 24px 0; }
+    .legal-callout .ic { font-family: var(--font-hit); font-size: 12px; color: var(--gold); letter-spacing: 0.15em; flex-shrink: 0; padding-top: 1px; }
+    .legal-callout p { margin: 0; font-size: 12.5px; color: var(--text-2); }
+
+    .ascii-flow { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); line-height: 1.6; white-space: pre; overflow-x: auto; }
+    .ascii-flow .hot { color: var(--hot); }
+    .ascii-flow .ice { color: var(--ice); }
+    .ascii-flow .gold { color: var(--gold); }
+    .ascii-flow .muted { color: var(--muted); }
+
+    @media (max-width: 760px) {
+      .wrap { padding: 40px 20px 80px; }
+      h1 { font-size: 38px; }
+      h2 { font-size: 22px; }
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .topbar { padding: 14px 20px; }
+      .stack { grid-template-columns: 1fr; }
+      .stack .layer { padding-top: 0; }
+    }
+  </style>
+</head>
+<body class="kira">
+  <div class="topbar">
+    <div style="display:flex; align-items:center; gap:8px;">
+      <span style="font-family: var(--font-jp); font-size:20px; font-weight:900; color: var(--hot); text-shadow: 0 0 12px rgba(255,31,109,0.5);">煌</span>
+      <span style="font-family: var(--font-display); font-size:14px; letter-spacing:0.12em;">KIRA</span>
+      <div class="pipe"></div>
+      <span style="font-size:12px; color: var(--muted); font-family: var(--font-mono);">technical brief · v0.1</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:20px;">
+      <a href="index.html">← Design canvas</a>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="eyebrow">Companion document</div>
+    <h1>The engine room.</h1>
+    <p class="lede">
+      A focused brief on how KIRA gets built and how its content empire scales without
+      losing speed or SEO. Sitemap, user flows, AI integration map, automated SEO
+      content engine, database schema notes, and a defensible tech stack.
+    </p>
+
+    <!-- 01 SITEMAP -->
+    <h2><span class="n">01</span> Sitemap & user flow</h2>
+    <p>
+      Three flagged entry points feed every user into the same flywheel: <b>discover → consume → react → share</b>.
+      The Creator Portal and the Mature library are deliberately quarantined sub-apps so they don't pollute
+      the main domain's SEO or ad-network compliance.
+    </p>
+
+    <div class="flow">
+      <div class="ascii-flow">
+<span class="hot">          ▣ ENTRY</span>                <span class="muted">                                              ▣ EXIT</span>
+<span class="muted">  ┌─────────┴─────────┐</span>
+  <span class="ice">/ ask</span>     <span class="hot">/ (home)</span>     <span class="muted">/title/&lt;slug&gt;</span>     <span class="muted">/read/&lt;ch&gt;</span>     <span class="gold">/short/new</span>
+  AI search   feed          detail              reader            studio
+   │              │              │                     │                  │
+   │              │              ▼                     ▼                  ▼
+   │              │       <span class="muted">/character/&lt;slug&gt;</span>   <span class="ice">read-along</span>      <span class="gold">→ TikTok</span>
+   │              │       <span class="muted">/episode/&lt;id&gt;</span>      <span class="ice">overlay</span>          <span class="gold">→ YouTube Shorts</span>
+   │              │                                                       <span class="gold">→ IG Reels</span>
+   └──────────────┴──────────────────► <span class="hot">/library, /me, /badges</span>
+
+  <span class="muted">────── separated sub-domains ──────</span>
+   <span class="violet" style="color: var(--violet)">m.kira.app</span>         (age-gated mature library, 17+)
+   <span class="muted">studio.kira.app</span>     (creator + studio portal, KYC for monetization)
+   <span class="muted">api.kira.app</span>        (public read-only API, rate-limited)
+      </div>
+    </div>
+
+    <div class="grid-3" style="margin-top: 22px;">
+      <div class="card"><span class="tag hot">USER · READER</span><h3>Discover → finish a series</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        Home feed → AI "for you" rail → title page → bookmark → reader (vert/LTR/RTL) → end-of-chapter → next title rec. Avg session: 22 min.
+      </p></div>
+      <div class="card"><span class="tag ice">USER · LEARNER</span><h3>Read-along Japanese</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        Reader → tap kanji → kana + meaning + audio. Tap "study mode" → exports a deck of new vocab into spaced repetition, weekly digest email.
+      </p></div>
+      <div class="card"><span class="tag gold">USER · REMIXER</span><h3>Panel → viral short</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        Title page → "make a short" → AI suggests 6 panels → studio → publish to TikTok/YT/IG. Auto-watermark, source attribution, 60/40 revenue split.
+      </p></div>
+      <div class="card"><span class="tag violet">CREATOR</span><h3>Upload original webcomic</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        studio.kira.app → onboarding (ID + tax) → series builder → episode upload → KIRA AI auto-tags, generates SEO description, runs through content review queue.
+      </p></div>
+      <div class="card"><span class="tag jade">DISCOVERY · AI</span><h3>Smart search → conversion</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        /ask → describe desired title → LLM-ranked results with "why" → 1-tap save → reader. Each refine round is logged as a preference signal.
+      </p></div>
+      <div class="card"><span class="tag violet">MATURE GATE</span><h3>SFW → 18+ section</h3><p style="font-size:12.5px; margin:0; line-height:1.6;">
+        Profile → settings → enable mature → 3-step consent → redirected to <code>m.kira.app</code>. Cookies and recommender are scoped per sub-domain.
+      </p></div>
+    </div>
+
+    <!-- 02 UI COMPONENTS -->
+    <h2><span class="n">02</span> UI component breakdown</h2>
+    <p>Each surface is a composition of named components. The mobile prototypes in the canvas implement everything below; the labels here map 1:1 to the JSX files.</p>
+
+    <div class="grid-2" style="margin-top: 16px;">
+      <div class="card">
+        <h3>Homepage <span style="color: var(--muted); font-size:12px; font-weight:400;">/screens/Homepage.jsx</span></h3>
+        <p style="margin:0; font-size:12.5px;">
+          <code>HomeTopBar</code> (streak chip, avatar) · <code>HomeMarquee</code> (ticker of "what's hot now") · <code>HomeHero</code> (kinetic cover with auto-trailer pill) · <code>HomeGenreRail</code> (kanji-led shōnen/seinen/shōjo/isekai shelves) · <code>HomeContinueReading</code> (progress-bar covers) · <code>HomeShortsStrip</code> (vertical-video tiles · "Make one" CTA) · <code>HomeForYou</code> (AI-tuned recommendations with % match + reason) · <code>HomeSchedule</code> (weekly airing calendar with bell-notify per row).
+        </p>
+      </div>
+      <div class="card">
+        <h3>Title detail <span style="color: var(--muted); font-size:12px; font-weight:400;">/screens/TitleDetail.jsx</span></h3>
+        <p style="margin:0; font-size:12.5px;">
+          <code>TitleHero</code> (full-bleed cover with looping motion-trailer pill) · <code>TitleCTAs</code> (read/save/notify) · <code>TitleSynopsis</code> with AI-rewritten badge · <code>TitleTrailerStrip</code> (16:9 motion comics, fan AMVs) · <code>TitleWhereToWatch</code> (official platforms only — for SEO/legal hygiene) · <code>TitleChapters</code> (newest first, read-status, "NEW" pulse) · <code>TitleCharacters</code> (wiki entry-points) · <code>TitleRelatedShorts</code> (community-clipped panels with hook to studio).
+        </p>
+      </div>
+      <div class="card">
+        <h3>Manga reader <span style="color: var(--muted); font-size:12px; font-weight:400;">/screens/Reader.jsx</span></h3>
+        <p style="margin:0; font-size:12.5px;">
+          <code>ReaderMobile({mode, readAlong})</code> dispatches to <code>ReaderVertical</code> | <code>ReaderHorizontal</code>. Page panels (<code>MangaPagePanel</code>) are SVG-composited with halftone, speed-lines, speech bubbles. <code>ReaderTopBar</code> auto-hides on scroll; <code>ReaderBottomBar</code> stays for progress + heart/comment/bookmark + mode chips. Read-Along: tap a kanji → glyph hot-replaced with <code>&lt;ruby&gt;</code> + kana + audio play.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Shorts Studio <span style="color: var(--muted); font-size:12px; font-weight:400;">/screens/ShortsStudio.jsx</span></h3>
+        <p style="margin:0; font-size:12.5px;">
+          <code>StudioTopBar</code> (autosave dot, publish CTA) · <code>StudioLeftRail</code> (Panels / Music / FX / Text tabs; AI pre-selects 6 panels) · <code>StudioCenter</code> (9:16 phone preview with text overlays, watermark, TikTok-style affordances + beat-drop AI suggestion) · <code>StudioRightRail</code> (text style, color, animation, export destinations with one-click cross-post to TikTok/YT/IG, 60/40 attribution callout) · <code>StudioTimeline</code> (video / text / audio / FX tracks with playhead and waveform).
+        </p>
+      </div>
+    </div>
+
+    <!-- 03 ARCHITECTURE -->
+    <h2><span class="n">03</span> Database & service architecture</h2>
+    <p>
+      Read-heavy by 200:1. Static catalog gets pre-rendered at the edge (the SEO play); user-state and writes go through an event bus.
+    </p>
+
+    <div class="ascii-flow" style="margin-top: 14px;">
+<span class="hot">Edge / CDN</span>          <span class="muted">→</span>   ISR'd title + chapter pages, sitemap.xml, OG cards, robots
+<span class="hot">App tier (Next.js)</span>  <span class="muted">→</span>   /api routes; server actions for write paths
+<span class="hot">Read DB</span>             <span class="muted">→</span>   <span class="ice">Postgres</span> (titles, chapters, characters, users, social)
+<span class="hot">Search</span>              <span class="muted">→</span>   <span class="ice">Meilisearch + pgvector</span> (semantic + lexical, hybrid scoring)
+<span class="hot">Event bus</span>           <span class="muted">→</span>   <span class="ice">Kafka / Redpanda</span> → recommender, analytics, recap
+<span class="hot">Object store</span>        <span class="muted">→</span>   <span class="ice">S3 + Cloudflare R2</span> for page images, motion clips, shorts
+<span class="hot">Cache</span>               <span class="muted">→</span>   <span class="ice">Redis</span> hot-keys: feed, leaderboard, streaks
+<span class="hot">AI services</span>         <span class="muted">→</span>   <span class="ice">LLM cluster</span> for /ask, synopsis rewrite, panel detection
+    </div>
+
+    <h3>Core entities</h3>
+<pre><span class="c">// Postgres — abridged</span>
+<span class="k">table</span> <span class="v">title</span>        (id, slug, type<span class="c">[manga|anime|webcomic|comic]</span>, demographic, status, jikan_id, anilist_id, kira_synopsis, original_synopsis_hash, mature, rating, ...)
+<span class="k">table</span> <span class="v">chapter</span>      (id, title_id, number, name, released_at, source<span class="c">[license|partner|user]</span>, page_count, motion_url<span class="c">?</span>, ...)
+<span class="k">table</span> <span class="v">character</span>    (id, title_id, slug, ja_name, en_name, role, lore_md, first_appearance_chapter)
+<span class="k">table</span> <span class="v">page</span>         (id, chapter_id, idx, image_url, sfx_json<span class="c">?</span>, jp_ocr_json<span class="c">?</span>)
+<span class="k">table</span> <span class="v">user</span>         (id, handle, region, dob, mature_opt_in, jp_jlpt_level<span class="c">?</span>)
+<span class="k">table</span> <span class="v">progress</span>     (user_id, chapter_id, page_idx, finished_at) <span class="c">// every 5s checkpoint</span>
+<span class="k">table</span> <span class="v">streak</span>       (user_id, day_index, day_count) <span class="c">// idempotent on (user, day)</span>
+<span class="k">table</span> <span class="v">short</span>        (id, author_id, source_title_id, panels[], audio_track_id, captions_json, status, published_to[])
+<span class="k">table</span> <span class="v">embedding</span>    (entity_type, entity_id, vector pgvector(1536)) <span class="c">// titles, chapters, shorts</span>
+<span class="k">table</span> <span class="v">creator</span>      (id, kyc_status, payout_method, rev_split_pct, content_acl)
+</pre>
+
+    <h3>Ingestion · third-party APIs</h3>
+    <p>
+      A nightly worker pulls deltas from <b>Jikan</b> (MyAnimeList), <b>AniList</b>, <b>Comic Vine</b> and licensed publisher feeds.
+      Every entity gets a <code>provenance_id</code> on each source it appeared in so we never lose attribution and dedupe across name variants.
+    </p>
+    <div class="pipeline">
+      <div class="step"><div class="step-n">01</div><div class="step-t">Pull deltas</div><div class="step-d">Jikan, AniList, MangaDex partners</div></div>
+      <div class="step"><div class="step-n">02</div><div class="step-t">Normalize</div><div class="step-d">unify slugs, link variants by ja_title hash</div></div>
+      <div class="step"><div class="step-n">03</div><div class="step-t">Enrich</div><div class="step-d">embeddings, tags, character extraction (LLM)</div></div>
+      <div class="step"><div class="step-n">04</div><div class="step-t">SEO rewrite</div><div class="step-d">unique synopsis ≠ API source</div></div>
+      <div class="step"><div class="step-n">05</div><div class="step-t">Publish</div><div class="step-d">ISR + sitemap + RSS</div></div>
+    </div>
+
+    <!-- 04 AI -->
+    <h2><span class="n">04</span> AI integration map</h2>
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="card hot">
+        <span class="tag hot">CHAT · REALTIME</span>
+        <h3>Smart Search ("Ask KIRA")</h3>
+        <p style="font-size:12.5px; margin:0;">LLM ranker over a hybrid retrieval (BM25 + pgvector). Each query rewritten into a structured filter: <code>{tags, vols≤30, completed, art_tier}</code>. We log refine turns as preference signals. Streams in &lt;1.4s p50.</p>
+      </div>
+      <div class="card">
+        <span class="tag ice">CONTENT</span>
+        <h3>Recommender · "For You"</h3>
+        <p style="font-size:12.5px; margin:0;">Two-tower model: user-progress embeddings × title embeddings. Re-ranked by an LLM that explains the pick ("if you liked Berserk"). Cold-start uses Jikan tag overlap.</p>
+      </div>
+      <div class="card">
+        <span class="tag jade">VISION</span>
+        <h3>Panel detector</h3>
+        <p style="font-size:12.5px; margin:0;">Per-chapter, every page gets bounded-box panel detection + OCR for JP text + SFX recognition. Feeds the Shorts Studio "AI-pick 6 panels", and the Read-Along overlay.</p>
+      </div>
+      <div class="card">
+        <span class="tag gold">LANG</span>
+        <h3>Read-Along JP tutor</h3>
+        <p style="font-size:12.5px; margin:0;">OCR'd kanji → MeCab tokenize → JMdict gloss + furigana + speaker. Words a user looks up bank into spaced-repetition decks tied to their JLPT level.</p>
+      </div>
+      <div class="card">
+        <span class="tag violet">REVIEW</span>
+        <h3>Trust & safety</h3>
+        <p style="font-size:12.5px; margin:0;">Creator uploads go through CLIP-based content classifier (mature, gore, IP-likeness). Anything ambiguous queued to human review; appeal pipeline visible in the Creator Portal.</p>
+      </div>
+      <div class="card">
+        <span class="tag hot">GEN</span>
+        <h3>Synopsis & character rewriter</h3>
+        <p style="font-size:12.5px; margin:0;">See §05 — this is the SEO engine. Strict source attribution; output diffed against the original to prevent paraphrase plagiarism.</p>
+      </div>
+    </div>
+
+    <!-- 05 SEO -->
+    <h2><span class="n">05</span> Automated SEO content engine</h2>
+    <p>
+      Wikipedia, MAL and Fandom rank for every title. The engine's job is to produce
+      <b>unique, sourced, fan-voice copy</b> Google rewards — and to ship it without a
+      copywriter touching it.
+    </p>
+
+    <div class="ascii-flow">
+<span class="muted">     ┌────────────┐    ┌────────────┐    ┌───────────────┐    ┌──────────────┐    ┌──────────────┐</span>
+<span class="hot">     │ source     │</span>──▶<span class="ice">│ extract    │</span>──▶<span class="gold">│ KIRA rewriter │</span>──▶<span class="muted">│ similarity  │</span>──▶<span class="hot">│ ISR publish  │</span>
+<span class="muted">     │ (Jikan/AL) │    │ facts      │    │ (LLM, brand) │    │ guard ≤25%  │    │ + sitemap    │</span>
+<span class="muted">     └────────────┘    └────────────┘    └───────────────┘    └──────────────┘    └──────────────┘</span>
+                                                                       <span class="muted">│</span>
+                                                                 <span class="muted">on-fail ▼</span>
+                                                          <span class="muted">human review queue</span>
+    </div>
+
+    <ol style="margin-top: 18px;">
+      <li><b>Extract facts</b> from Jikan / AniList — author, status, vols, demographic, character list. Never copies prose.</li>
+      <li><b>Brand-voice rewriter</b> (LLM with KIRA system prompt) writes synopsis, character lore, episode recaps. Tone: kinetic, present-tense, spoiler-safe.</li>
+      <li><b>Similarity guard</b>: rewritten text is embedded and compared against all known wikis/MAL pages. If &gt;25% cosine similarity to any single source, regenerate.</li>
+      <li><b>Schema.org</b> markup attached: <code>TVSeries</code>, <code>Book</code>, <code>ComicSeries</code>, <code>Person</code>, plus <code>Review</code> aggregates from upvotes. JSON-LD baked into the SSR head.</li>
+      <li><b>ISR publish</b>: pages re-render on chapter drop. <code>sitemap-titles.xml</code>, <code>sitemap-chapters.xml</code>, <code>sitemap-characters.xml</code> are partitioned per type. RSS feed per series for SEO and discovery.</li>
+      <li><b>Watch loop</b>: GSC API ingests CTR / impressions weekly; underperformers re-enter the rewriter with a different angle.</li>
+    </ol>
+
+    <div class="legal-callout">
+      <div class="ic">★</div>
+      <p>
+        <b style="color: var(--gold);">No scraping. No prose copying.</b> We license catalog metadata via Jikan's terms + commercial AniList agreement, and only structured facts move through the pipeline. The brand-voice copy is wholly KIRA-original — the similarity guard is the kill-switch.
+      </p>
+    </div>
+
+    <!-- 06 TECH STACK -->
+    <h2><span class="n">06</span> Tech stack & performance</h2>
+    <p>Strict budget: <b>LCP &lt; 1.5s</b> on a mobile mid-tier device, TBT &lt; 100ms, CLS &lt; 0.05. Every choice below serves that ceiling.</p>
+
+    <div class="card" style="margin-top: 16px;">
+      <div class="stack">
+        <div class="layer">FRONTEND</div>
+        <div>
+          <p style="margin:0;"><b>Next.js 15 (App Router)</b> with React Server Components. Static + ISR for catalog; Server Actions for writes. <b>TypeScript</b>, Tailwind + tokens, <b>shadcn/ui</b> primitives forked into the KIRA design system. Motion via <b>Framer Motion</b> + view-transitions API for buttery cross-page nav.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="layer">RENDERING</div>
+        <div>
+          <p style="margin:0;">Edge ISR on <b>Vercel</b> + <b>Cloudflare</b> in front. Title pages cache 24h, chapter pages 5min after drop. Reader pages stream image manifests; the actual page imgs are <code>image/avif</code> with <code>fetchpriority="high"</code> on visible panels.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="layer">BACKEND</div>
+        <div>
+          <p style="margin:0;"><b>Postgres 16</b> (Neon) for canonical data + pgvector. <b>Redis</b> for hot keys. <b>Meilisearch</b> for fast lexical. <b>S3 + Cloudflare R2</b> for images. <b>Inngest</b> for cron + event workers (ingestion, rewriter). <b>tRPC</b> internally where servers need to chat.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="layer">AI</div>
+        <div>
+          <p style="margin:0;">Smart Search and the rewriter call a tiered LLM stack — fast model for retrieval re-rank, frontier model for content generation. Embeddings via <code>text-embedding-3-large</code>; vision via custom panel-detector (YOLOv8 fine-tuned on a hand-labeled manga corpus).</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="layer">VIDEO</div>
+        <div>
+          <p style="margin:0;">Shorts Studio renders client-side with WebCodecs + WebAssembly FFmpeg for &lt;30s clips; longer renders go to a Lambda fleet. Auto-watermark, tag injection, and platform-aware aspect crop at upload time.</p>
+        </div>
+      </div>
+      <div class="stack">
+        <div class="layer">OBSERVABILITY</div>
+        <div>
+          <p style="margin:0;"><b>Sentry</b> for FE + BE errors, <b>OpenTelemetry</b> to <b>Honeycomb</b>, <b>Datadog RUM</b> for Core Web Vitals per route, <b>PostHog</b> for product analytics + feature flags. SEO health: weekly GSC API pull → underperformer report.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 RISKS -->
+    <h2><span class="n">07</span> Risks & open questions</h2>
+    <ol>
+      <li><b>Licensing.</b> The "Where to Watch/Read officially" directory is fine; hosting chapters needs publisher deals. MVP: licensed webcomics + creator-portal originals only. Catalog metadata for everything else, links out to Crunchyroll/MangaPlus.</li>
+      <li><b>Shorts Studio + copyright.</b> Fan-clipped panels from licensed manga is a fair-use gray zone. Mitigation: opt-in by publisher (rev-share program), aggressive takedown SLA, auto-watermark, source attribution baked into every export.</li>
+      <li><b>Read-Along scope.</b> JLPT N5–N3 is realistic at launch. N2/N1 idiomatic / SFX is hard — start with the kanji + kana + meaning loop, defer audio pronunciation to phase 2.</li>
+      <li><b>Mature isolation.</b> Strict sub-domain split + ad-network-safe main app is non-negotiable; cookies, recommender, and avatar must not bleed across.</li>
+      <li><b>Creator monetization timeline.</b> Phase 1 = portal + uploads + analytics. Monetization (rev share, tipping, paid chapters) is phase 2 once we have publisher deals and KYC infra.</li>
+    </ol>
+
+    <p style="margin-top: 64px; text-align: center; font-size: 12px; color: var(--muted);">
+      <span class="kbd">esc</span> to return to design canvas · KIRA · 煌 · 2026
+    </p>
+  </div>
+</body>
+</html>
