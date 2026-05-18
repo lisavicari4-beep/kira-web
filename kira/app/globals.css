@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-hit: 'Anton', sans-serif;
+  --font-display: 'Archivo Black', sans-serif;
+  --font-ui: 'Space Grotesk', system-ui, sans-serif;
+  --font-jp: 'Noto Sans JP', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  html, body { background: #050507; color: #f5f5f7; }
+  body { font-family: var(--font-ui); -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+}
+
+@layer components {
+  .kira-hit { font-family: var(--font-hit); letter-spacing: 0.02em; text-transform: uppercase; line-height: 0.9; }
+  .kira-display { font-family: var(--font-display); letter-spacing: -0.02em; }
+  .kira-jp { font-family: var(--font-jp); }
+  .kira-mono { font-family: var(--font-mono); }
+
+  .kira-tag {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; padding: 3px 7px; border-radius: 3px;
+    border: 1px solid theme('colors.line-strong');
+    color: theme('colors.text.dim'); background: rgba(255,255,255,0.03);
+  }
+  .kira-tag-hot    { color: theme('colors.hot.DEFAULT'); border-color: rgba(255,31,109,0.6);  background: rgba(255,31,109,0.08); }
+  .kira-tag-violet { color: theme('colors.violet');      border-color: rgba(184,85,255,0.5);  background: rgba(184,85,255,0.08); }
+  .kira-tag-gold   { color: theme('colors.gold');        border-color: rgba(255,212,0,0.5);   background: rgba(255,212,0,0.08); }
+  .kira-tag-jade   { color: theme('colors.jade');        border-color: rgba(31,243,157,0.5);  background: rgba(31,243,157,0.08); }
+
+  .kira-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    font-weight: 700; font-size: 13px;
+    padding: 11px 16px; border-radius: 9999px;
+    border: 1px solid theme('colors.line-strong');
+    background: theme('colors.bg.2'); color: theme('colors.text.DEFAULT');
+    cursor: pointer; transition: transform .12s, background .12s;
+  }
+  .kira-btn:hover  { background: theme('colors.bg.3'); }
+  .kira-btn:active { transform: scale(0.98); }
+  .kira-btn-hot    { background: theme('colors.hot.DEFAULT'); color: #fff; border-color: transparent; box-shadow: theme('boxShadow.hot-soft'); }
+  .kira-btn-hot:hover { background: #ff3a7e; }
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
